@@ -97,6 +97,88 @@ class AnimeController extends Controller
                 return HttpResponse::notFound($request);
             }
 
+            $charactersAndStaff = $this->jikan->getAnimeCharactersAndStaff(new AnimeCharactersAndStaffRequest($id));
+            $characters = $charactersAndStaff->getCharacters();
+            $searchInfoArray = array();
+            foreach ($characters as $character) {
+                $name = $character->getCharacter()->getName();
+                $voiceActors = $character->getVoiceActors();
+                if(!$voiceActors)
+                {
+                    array_push($searchInfoArray,$name);
+                } else{
+                    $numVoiceActors = count($voiceActors);
+                    for($i = 0; $i < $numVoiceActors; $i++) {
+                        $voiceActor = $voiceActors[$i];
+                        if($voiceActor->getLanguage() == 'Japanese')
+                        {
+                            $actor = $voiceActor->getPerson()->getName();
+                            break;
+                        }else if($i == $numVoiceActors-1)
+                        {
+                            $actor = $voiceActors[0]->getPerson()->getName();
+                        }
+                    }
+                    array_push($searchInfoArray,$name,$actor);
+                }
+            }
+            foreach($response['opening_themes'] as $opening )
+            {
+                preg_match('/(?<=\")(.*)(?=\")/',$opening,$part);
+                if($part && $part[0])
+                {
+                    if(str_contains($part[0],'('))
+                    {
+                        preg_match('/.+?(?=\s\()/',$part[0],$nameOpening);
+                        preg_match('/(?<=\().*[^\)]/',$part[0],$nameOpeningJanapanese);
+                        if($nameOpening[0])
+                        {
+                           array_push($searchInfoArray,$nameOpening[0]);
+                        }
+                        if($nameOpeningJanapanese[0])
+                        {
+                           array_push($searchInfoArray,$nameOpeningJanapanese[0]);
+                        }
+                    }else{
+                        array_push($searchInfoArray,$part[0]);
+                    }
+                
+                }
+            }
+
+            foreach($response['ending_themes'] as $ending )
+            {
+                preg_match('/(?<=\")(.*)(?=\")/',$ending,$part);
+                if($part && $part[0])
+                {
+                    if(str_contains($part[0],'('))
+                    {
+                        preg_match('/.+?(?=\s\()/',$part[0],$nameEnding);
+                        preg_match('/(?<=\().*[^\)]/',$part[0],$nameEndingJanapanese);
+                        if($nameEnding[0])
+                        {
+                           array_push($searchInfoArray,$nameEnding[0]);
+                        }
+                        if($nameEndingJanapanese[0])
+                        {
+                           array_push($searchInfoArray,$nameEndingJanapanese[0]);
+                        }
+                        
+                    }
+                    else
+                    {
+                        array_push($searchInfoArray,$part[0]);
+                    }
+               
+                }
+            }
+
+            $searchInfoArray = array_unique($searchInfoArray);
+            $searchInfo =[
+                'search_info' => $searchInfoArray,
+                'community_search_keys' => ['']
+            ];
+
             if ($results->isEmpty()) {
                 $meta = [
                     'createdAt' => new UTCDateTime(),
@@ -106,7 +188,7 @@ class AnimeController extends Controller
             }
             $meta['modifiedAt'] = new UTCDateTime();
 
-            $response = $meta + $response;
+            $response = $meta + $response + $searchInfo;
 
             if ($results->isEmpty()) {
                 Anime::query()
