@@ -23,8 +23,10 @@ class CreateAnimeTable extends Migration
             $table->index(['aired.to' => 1], 'aired.to');
             $table->index('airing', 'airing');
             $table->index('demographics.mal_id', 'demographics.mal_id');
+            $table->index('demographics.name', 'demographics.name');
             $table->index('explicit_genres.mal_id', 'explicit_genres.mal_id');
             $table->index('genres.mal_id', 'genres.mal_id');
+            $table->index('genres.name', 'genres.name');
             $table->index('licensors.mal_id', 'licensors.mal_id');
             $table->index('licensors.name', 'licensors.name');
             $table->index('producers.mal_id', 'producers.mal_id');
@@ -34,6 +36,7 @@ class CreateAnimeTable extends Migration
             $table->index('search_info', 'search_info');
             $table->index('community_search_keys', 'community_search_keys');
             $table->index('themes.mal_id', 'themes.mal_id');
+            $table->index('themes.name', 'themes.name');
 
             $table->index('episodes', 'episodes');
             $table->integer('members')->index('members');
@@ -51,6 +54,7 @@ class CreateAnimeTable extends Migration
             $table->index('title_english', 'title_english');
             $table->index('title_japanese', 'title_japanese');
             $table->index('title_synonyms', 'title_synonyms');
+            $table->index('titles.name', 'titles.name');
 
 
             $table->index(

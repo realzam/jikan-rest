@@ -52,6 +52,101 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AnimeController extends Controller
 {
+    private  function synonymGenreTheme(String $q)
+    {
+        switch ($q) {
+            case "Action": //id:1
+                return ["Acción"];
+            case "Adventure": //id:2
+                return ["Aventura", "Viaje"];
+            case "Cars": //id:3
+                return ["Carros", "Automóvil", "Autos"];
+            case "Comedy": //id:4
+                return ["Comedia", "Bromas", "Chistes"];
+            case "Avant Garde": //id:5
+                return ["Vanguardia", "Inventivo", "Innovador", "Experimental", "Moderno", "Futurista", "Avances"];
+            case "Demons": //id:6
+                return ["Demonios"];
+            case "Mystery": //id:7
+                return ["Misterio", "Intriga", "Enigma", "Puzzle"];
+                //Drama id:8
+                //Ecchi id:9
+            case "Fantasy": //id:10
+                return ["Fantasía"];
+            case "Game": //id:11
+                return ["Juego", "Videojuego"];
+                //Hentai id:12
+            case "Historical": //id:13
+                return ["Histórico"];
+            case "Horror": //id:14
+                return ["Terror", "Miedo", "Espantos"];
+            case "Kids": //id:15
+                return ["Niños"];
+                //null id:16
+            case "Martial Arts": //id:17
+                return ["Artes Marciales"];
+            case "Mecha": //id:18
+                return ["Robots"];
+            case "Music": //id:19
+                return ["Musica"];
+            case "Parody": //id:20
+                return ["Paródia"];
+                //Samurai id:21
+            case "Romance": //id:22
+                return ["Amor", "Novios", "Noviazgo", "Romántico", "Relaciones amorosas"];
+            case "School": //id:23
+                return ["Escolar", "Escuela", "Instituto", "Colegio", "Academia"];
+            case "Sci-Fi": //id:24
+                return ["Ciencia ficción", "Futurista"];
+                //shojo id:25
+            case "Girls Love": //id:26
+                return ["GL", "Yuri", "Tijeras"];
+                //Shounen id:27
+            case "Boys Love": //id:28
+                return ["BL", "Yaoi", "Espadazos"];
+            case "Space": //id:29
+                return ["Espacio", "Espacio exterior", "Espacio sideral", "Universo"];
+            case "Sports": //id:30
+                return ["Deportes", "Spokon", "Deportivo"];
+            case "Super Power": //id:31
+                return ["Super poderes"];
+            case "Vampire": //id:32
+                return ["Vampiros"];
+                //null id:33
+                //null id:34
+                //Harem id:35
+            case "Slice of Life": //id:36
+                return ["Recuentos de la vida", "Vida cotidiana"];
+            case "Supernatural": //id:37
+                return ["Sobrenatural"];
+            case "Military": //id:38
+                return ["Militar", "Bélico", "Soldado", "Guerra"];
+            case "Police": //id:39
+                return ["Policía", "Policial"];
+            case "Psychological": //id:40
+                return ["Psicológico", "Juegos  mentales"];
+            case "Suspense": //id:41
+                return ["Suspenso"];
+                //Seinen id:42
+                //Josei id:43
+                //null id:44
+                //null id:45
+            case "Award Winning": //id:46
+                return ["Ganador del premio"];
+            case "Gourmet": //id:47
+                return ["Alimentos", "Comida"];
+            case "Workplace": //id:48
+                return ["Lugar de trabajo", "Trabajo", "Laburo", "Trabajo", "Empleo", "Entorno laboral"];
+                //?? id:49
+            case "Adult Cast": //id:50
+                return ["Personajes Adultos", "Adultos"];
+            case "Anthropomorphic": //id:51
+                return ["Furros", "Furry", "Animales", "Antropomórfico"];
+            default:
+             return null;
+        }
+    }
+
     /**
      *  @OA\Get(
      *     path="/anime/{id}/full",
@@ -103,78 +198,81 @@ class AnimeController extends Controller
             foreach ($characters as $character) {
                 $name = $character->getCharacter()->getName();
                 $voiceActors = $character->getVoiceActors();
-                if(!$voiceActors)
-                {
-                    array_push($searchInfoArray,$name);
-                } else{
+                if (!$voiceActors) {
+                    array_push($searchInfoArray, $name);
+                } else {
                     $numVoiceActors = count($voiceActors);
-                    for($i = 0; $i < $numVoiceActors; $i++) {
+                    for ($i = 0; $i < $numVoiceActors; $i++) {
                         $voiceActor = $voiceActors[$i];
-                        if($voiceActor->getLanguage() == 'Japanese')
-                        {
+                        if ($voiceActor->getLanguage() == 'Japanese') {
                             $actor = $voiceActor->getPerson()->getName();
-                            break;
-                        }else if($i == $numVoiceActors-1)
-                        {
+        
+                        } else if ($i == $numVoiceActors - 1) {
                             $actor = $voiceActors[0]->getPerson()->getName();
                         }
                     }
-                    array_push($searchInfoArray,$name,$actor);
+                    array_push($searchInfoArray, $name, $actor);
                 }
             }
-            foreach($response['opening_themes'] as $opening )
-            {
-                preg_match('/(?<=\")(.*)(?=\")/',$opening,$part);
-                if($part && $part[0])
-                {
-                    if(str_contains($part[0],'('))
-                    {
-                        preg_match('/.+?(?=\s\()/',$part[0],$nameOpening);
-                        preg_match('/(?<=\().*[^\)]/',$part[0],$nameOpeningJanapanese);
-                        if($nameOpening[0])
-                        {
-                           array_push($searchInfoArray,$nameOpening[0]);
+            foreach ($response['opening_themes'] as $opening) {
+                preg_match('/(?<=\")(.*)(?=\")/', $opening, $part);
+                if ($part && $part[0]) {
+                    if (str_contains($part[0], '(')) {
+                        preg_match('/.+?(?=\s\()/', $part[0], $nameOpening);
+                        preg_match('/(?<=\().*[^\)]/', $part[0], $nameOpeningJanapanese);
+                        if ($nameOpening[0]) {
+                            array_push($searchInfoArray, $nameOpening[0]);
                         }
-                        if($nameOpeningJanapanese[0])
-                        {
-                           array_push($searchInfoArray,$nameOpeningJanapanese[0]);
+                        if ($nameOpeningJanapanese[0]) {
+                            array_push($searchInfoArray, $nameOpeningJanapanese[0]);
                         }
-                    }else{
-                        array_push($searchInfoArray,$part[0]);
+                    } else {
+                        array_push($searchInfoArray, $part[0]);
                     }
-                
                 }
             }
 
-            foreach($response['ending_themes'] as $ending )
-            {
-                preg_match('/(?<=\")(.*)(?=\")/',$ending,$part);
-                if($part && $part[0])
-                {
-                    if(str_contains($part[0],'('))
-                    {
-                        preg_match('/.+?(?=\s\()/',$part[0],$nameEnding);
-                        preg_match('/(?<=\().*[^\)]/',$part[0],$nameEndingJanapanese);
-                        if($nameEnding[0])
-                        {
-                           array_push($searchInfoArray,$nameEnding[0]);
+            foreach ($response['ending_themes'] as $ending) {
+                preg_match('/(?<=\")(.*)(?=\")/', $ending, $part);
+                if ($part && $part[0]) {
+                    if (str_contains($part[0], '(')) {
+                        preg_match('/.+?(?=\s\()/', $part[0], $nameEnding);
+                        preg_match('/(?<=\().*[^\)]/', $part[0], $nameEndingJanapanese);
+                        if ($nameEnding[0]) {
+                            array_push($searchInfoArray, $nameEnding[0]);
                         }
-                        if($nameEndingJanapanese[0])
-                        {
-                           array_push($searchInfoArray,$nameEndingJanapanese[0]);
+                        if ($nameEndingJanapanese[0]) {
+                            array_push($searchInfoArray, $nameEndingJanapanese[0]);
                         }
-                        
+                    } else {
+                        array_push($searchInfoArray, $part[0]);
                     }
-                    else
-                    {
-                        array_push($searchInfoArray,$part[0]);
-                    }
-               
+                }
+            }
+
+            foreach ($response['themes'] as $theme) {
+                $themeSynonyms = $this->synonymGenreTheme($theme['name']);
+                if ($themeSynonyms) {
+                    $searchInfoArray = array_merge($searchInfoArray, $themeSynonyms);
+                }
+            }
+
+            foreach ($response['genres'] as $genre) {
+                $genreSynonyms = $this->synonymGenreTheme($genre['name']);
+                if ($genreSynonyms) {
+                    $searchInfoArray = array_merge($searchInfoArray, $genreSynonyms);
+                }
+            }
+
+            foreach ($response['demographics'] as $demographic) {
+                $demographicSynonyms = $this->synonymGenreTheme($demographic['name']);
+                if ($demographicSynonyms) {
+                    $searchInfoArray = array_merge($searchInfoArray, $demographicSynonyms);
                 }
             }
 
             $searchInfoArray = array_unique($searchInfoArray);
-            $searchInfo =[
+            $searchInfo = [
                 'search_info' => $searchInfoArray,
                 'community_search_keys' => ['']
             ];
