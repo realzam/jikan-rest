@@ -33,10 +33,14 @@ class CreateAnimeTable extends Migration
             $table->index('producers.name', 'producers.name');
             $table->index('studios.mal_id', 'studios.mal_id');
             $table->index('studios.name', 'studios.name');
-            $table->index('search_info', 'search_info');
-            $table->index('community_search_keys', 'community_search_keys');
             $table->index('themes.mal_id', 'themes.mal_id');
             $table->index('themes.name', 'themes.name');
+            $table->index('characters', 'characters');
+            $table->index('seiyus', 'seiyus');
+            $table->index('openingsNames', 'openingsNames');
+            $table->index('endingsNames', 'endingsNames');
+            $table->index('synonymsTGD', 'synonymsTGD');
+            $table->index('community_search_keys', 'community_search_keys');
 
             $table->index('episodes', 'episodes');
             $table->integer('members')->index('members');

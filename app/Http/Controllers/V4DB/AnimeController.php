@@ -192,26 +192,29 @@ class AnimeController extends Controller
                 return HttpResponse::notFound($request);
             }
 
+            $charactersInfo = array();
+            $seiyus = array();
+            $openingsNames = array();
+            $endingsNames = array();
+            $synonymsTGD = array(); //TGD:T=>Themes, G=>Genre, D=>Demographics
+
             $charactersAndStaff = $this->jikan->getAnimeCharactersAndStaff(new AnimeCharactersAndStaffRequest($id));
             $characters = $charactersAndStaff->getCharacters();
-            $searchInfoArray = array();
             foreach ($characters as $character) {
                 $name = $character->getCharacter()->getName();
                 $voiceActors = $character->getVoiceActors();
-                if (!$voiceActors) {
-                    array_push($searchInfoArray, $name);
-                } else {
+                array_push($charactersInfo, $name);
+                if ($voiceActors) {
                     $numVoiceActors = count($voiceActors);
                     for ($i = 0; $i < $numVoiceActors; $i++) {
                         $voiceActor = $voiceActors[$i];
                         if ($voiceActor->getLanguage() == 'Japanese') {
                             $actor = $voiceActor->getPerson()->getName();
-        
                         } else if ($i == $numVoiceActors - 1) {
                             $actor = $voiceActors[0]->getPerson()->getName();
                         }
                     }
-                    array_push($searchInfoArray, $name, $actor);
+                    array_push($seiyus, $actor);
                 }
             }
             foreach ($response['opening_themes'] as $opening) {
@@ -221,13 +224,13 @@ class AnimeController extends Controller
                         preg_match('/.+?(?=\s\()/', $part[0], $nameOpening);
                         preg_match('/(?<=\().*[^\)]/', $part[0], $nameOpeningJanapanese);
                         if ($nameOpening[0]) {
-                            array_push($searchInfoArray, $nameOpening[0]);
+                            array_push($openingsNames, $nameOpening[0]);
                         }
                         if ($nameOpeningJanapanese[0]) {
-                            array_push($searchInfoArray, $nameOpeningJanapanese[0]);
+                            array_push($openingsNames, $nameOpeningJanapanese[0]);
                         }
                     } else {
-                        array_push($searchInfoArray, $part[0]);
+                        array_push($openingsNames, $part[0]);
                     }
                 }
             }
@@ -239,13 +242,13 @@ class AnimeController extends Controller
                         preg_match('/.+?(?=\s\()/', $part[0], $nameEnding);
                         preg_match('/(?<=\().*[^\)]/', $part[0], $nameEndingJanapanese);
                         if ($nameEnding[0]) {
-                            array_push($searchInfoArray, $nameEnding[0]);
+                            array_push($endingsNames, $nameEnding[0]);
                         }
                         if ($nameEndingJanapanese[0]) {
-                            array_push($searchInfoArray, $nameEndingJanapanese[0]);
+                            array_push($endingsNames, $nameEndingJanapanese[0]);
                         }
                     } else {
-                        array_push($searchInfoArray, $part[0]);
+                        array_push($endingsNames, $part[0]);
                     }
                 }
             }
@@ -253,28 +256,31 @@ class AnimeController extends Controller
             foreach ($response['themes'] as $theme) {
                 $themeSynonyms = $this->synonymGenreTheme($theme['name']);
                 if ($themeSynonyms) {
-                    $searchInfoArray = array_merge($searchInfoArray, $themeSynonyms);
+                    $synonymsTGD = array_merge($synonymsTGD, $themeSynonyms);
                 }
             }
 
             foreach ($response['genres'] as $genre) {
                 $genreSynonyms = $this->synonymGenreTheme($genre['name']);
                 if ($genreSynonyms) {
-                    $searchInfoArray = array_merge($searchInfoArray, $genreSynonyms);
+                    $synonymsTGD = array_merge($synonymsTGD, $genreSynonyms);
                 }
             }
 
             foreach ($response['demographics'] as $demographic) {
                 $demographicSynonyms = $this->synonymGenreTheme($demographic['name']);
                 if ($demographicSynonyms) {
-                    $searchInfoArray = array_merge($searchInfoArray, $demographicSynonyms);
+                    $synonymsTGD = array_merge($synonymsTGD, $demographicSynonyms);
                 }
             }
 
-            $searchInfoArray = array_unique($searchInfoArray);
             $searchInfo = [
-                'search_info' => $searchInfoArray,
-                'community_search_keys' => ['']
+                'characters' => $charactersInfo,
+                'seiyus' => $seiyus,
+                'openingsNames' => $openingsNames,
+                'endingsNames' => $endingsNames,
+                'synonymsTGD' => $synonymsTGD,
+                'community_search_keys' => []
             ];
 
             if ($results->isEmpty()) {
