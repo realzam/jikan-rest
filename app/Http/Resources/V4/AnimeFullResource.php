@@ -302,6 +302,20 @@ class AnimeFullResource extends JsonResource
      *      ),
      *
      *      @OA\Property(
+     *          property="season_es",
+     *          type="string",
+     *          enum={"verano", "invierno", "primavera", "otoño"},
+     *          description="Season in spanish",
+     *          nullable=true
+     *      ),
+     *
+     *      @OA\Property(
+     *          property="explicit",
+     *          type="boolean",
+     *          description="idExplicit content (Hentai) boolean"
+     *      )
+     *
+     *      @OA\Property(
      *          property="streaming",
      *          type="array",
      *
@@ -373,6 +387,8 @@ class AnimeFullResource extends JsonResource
             ],
             'external' => $this->external_links,
             'streaming' => $this->streaming_links,
+            'explicit'=> $this->explicit,
+            'season_es' => $this->season_es,
         ];
     }
 }

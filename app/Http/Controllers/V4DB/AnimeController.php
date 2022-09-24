@@ -77,9 +77,9 @@ class AnimeController extends Controller
                 return ["Juego", "Videojuego"];
                 //Hentai id:12
             case "Historical": //id:13
-                return ["Histórico"];
+                return ["Histórico","Historia"];
             case "Horror": //id:14
-                return ["Terror", "Miedo", "Espantos"];
+                return ["Terror", "Miedo", "Espantos","Sustos"];
             case "Kids": //id:15
                 return ["Niños"];
                 //null id:16
@@ -142,6 +142,65 @@ class AnimeController extends Controller
                 return ["Personajes Adultos", "Adultos"];
             case "Anthropomorphic": //id:51
                 return ["Furros", "Furry", "Animales", "Antropomórfico"];
+            case "CGDCT": //id:52
+                return ["FBI", "MOE", "Kawai","Cute","Lolis"];
+            case "Childcare": //id:53
+                    return ["Crianza","Guardería", "Cuidado de niños", "Niñera","Niñero"];
+            case "Combat Sports": //id:54
+                return ["Combate", "Duelo", "Peleas", "Cute", "Lolis", "Luchas"];
+            case "Delinquent": //id:55
+                return ["Delincuente", "Vándalo", "Malhechor", "Criminal", "Pandillas", "Rufián", " GTA"];
+            case "Educational"://id:56
+                return ["Educativo","Enseñanza", "Aprendizaje", "Informativo", "Formativo"];
+            case "Gag Humor"://id:57
+                return ["Humor","XD","Payaso", "Clown"];
+            case "Gore"://id:58
+                return ["Sangre","Rojo","Sangriento", "Carnicería", "Matanza"];
+            case "High Stakes Game"://id:59
+                return ["Juegos", "Apuestas", "Juego de alto riesgo"];
+            case "Idols (Female)"://id:60
+                return ["Idols", "Idols Mujer"];
+            case "Idols (Male)"://id:61
+                return ["Idols", "Idols Hombre"];
+            case "Isekai"://id:62
+                return ["Otro mundo", "Nueva vida"];
+            case "Iyashikei"://id:63
+                return ["Sanar", "Curativo", "Purificador", "Recuentos de la vida", "Vida cotidiana", "Tranquilidad"];
+            case "Love Polygon"://id:64
+                return ["Triangulo amoroso", "Friendzone","Guinazo"];
+            // Magical Sex Shift id:65
+            case "Mahou Shoujo"://id:66
+                return ["Chica magica", "Niña magica","Chica mágica", "Niña mágica"];
+            case "Medical"://id:67
+                return ["Medico", "Doctor","Medicina", "Salud"];
+            case "Organized Crime "://id:68
+                return ["Crimen", "Crimen organizado","Mafias", "Mafioso","Delincuencia"];
+            case "Otaku Culture"://id:69
+                return ["Otaku" ,"Cultura Otaku", "Freaky"];
+            case "Performing Arts"://id:70
+                return ["Artes escénicas" ,"Artes escenicas", "Artes"];
+            case "Pets"://id:71
+                return ["Mascotas" ,"Animales"];
+            case "Reincarnation"://id:72
+                return ["Reencarnacion"];
+            case "Reverse Harem"://id:73
+                return ["Harem Inverso","Harem de hombres"];
+            case "Romantic Subtext"://id:74
+                return ["Subtexto romántico","Casi algo", "Casi novio", "Casi novia", "Amigovios", "Cortejo", "Flirteo", "Acompañamiento", "Amor", "Románce","Romántico", "Relaciones amorosas", "Emparejar", "Ship", "Shipeo", "Shipear", "Shipp", "Shippeo", "Shippear", "Tibios", "Timidos"];
+            case "Showbiz"://id:75
+                return ["Espectáculo","Industria"];
+            case "Survival"://id:76
+                return ["Supervivencia","Sobrevivir"];;
+            case "Team Sports"://id:77
+                return ["Equipo deportivo" ,"Deportes", "Spokon", "Deportivo","Equipos deportivos"];
+            case "Time Travel"://id:78
+                return ["Viaje en el tiempo","Viaje a través del tiempo", "Máquina del tiempo"];
+            case "Video Game"://id:79
+                return ["Video juegos","Videojuego","Juegos de video"];
+            case "Visual Arts"://id:80
+                return ["Arte visual","Cine"];
+            case "Crossdressing"://id:81
+                return ["Trapos","Trasvestis"];
             default:
              return null;
         }
@@ -194,8 +253,6 @@ class AnimeController extends Controller
 
             $charactersInfo = array();
             $seiyus = array();
-            $openingsNames = array();
-            $endingsNames = array();
             $synonymsTGD = array(); //TGD:T=>Themes, G=>Genre, D=>Demographics
 
             $charactersAndStaff = $this->jikan->getAnimeCharactersAndStaff(new AnimeCharactersAndStaffRequest($id));
@@ -215,41 +272,6 @@ class AnimeController extends Controller
                         }
                     }
                     array_push($seiyus, $actor);
-                }
-            }
-            foreach ($response['opening_themes'] as $opening) {
-                preg_match('/(?<=\")(.*)(?=\")/', $opening, $part);
-                if ($part && $part[0]) {
-                    if (str_contains($part[0], '(')) {
-                        preg_match('/.+?(?=\s\()/', $part[0], $nameOpening);
-                        preg_match('/(?<=\().*[^\)]/', $part[0], $nameOpeningJanapanese);
-                        if ($nameOpening[0]) {
-                            array_push($openingsNames, $nameOpening[0]);
-                        }
-                        if ($nameOpeningJanapanese[0]) {
-                            array_push($openingsNames, $nameOpeningJanapanese[0]);
-                        }
-                    } else {
-                        array_push($openingsNames, $part[0]);
-                    }
-                }
-            }
-
-            foreach ($response['ending_themes'] as $ending) {
-                preg_match('/(?<=\")(.*)(?=\")/', $ending, $part);
-                if ($part && $part[0]) {
-                    if (str_contains($part[0], '(')) {
-                        preg_match('/.+?(?=\s\()/', $part[0], $nameEnding);
-                        preg_match('/(?<=\().*[^\)]/', $part[0], $nameEndingJanapanese);
-                        if ($nameEnding[0]) {
-                            array_push($endingsNames, $nameEnding[0]);
-                        }
-                        if ($nameEndingJanapanese[0]) {
-                            array_push($endingsNames, $nameEndingJanapanese[0]);
-                        }
-                    } else {
-                        array_push($endingsNames, $part[0]);
-                    }
                 }
             }
 
@@ -277,9 +299,7 @@ class AnimeController extends Controller
             $searchInfo = [
                 'characters' => $charactersInfo,
                 'seiyus' => $seiyus,
-                'openingsNames' => $openingsNames,
-                'endingsNames' => $endingsNames,
-                'synonymsTGD' => $synonymsTGD,
+                'synonyms_es' => $synonymsTGD,
                 'community_search_keys' => []
             ];
 

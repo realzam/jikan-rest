@@ -1,12 +1,19 @@
 <?php
 
+$uri = 'mongodb://';
+
+if(env('DB_DNS_SEED_ENABLE', false))
+{
+    $uri='mongodb+srv://';
+}
+
 return [
     'default' => env('DB_CONNECTION', 'mongodb'),
 
     'connections' => [
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn'=>'mongodb+srv://'.env('DB_USERNAME', 'admin').':'.env('DB_PASSWORD', '').'@'.env('DB_HOST', 'localhost').'/'.env('DB_DATABASE', 'jikan'),
+            'dsn'=>$uri.env('DB_USERNAME', 'admin').':'.env('DB_PASSWORD', '').'@'.env('DB_HOST', 'localhost').'/',
             'database' => env('DB_DATABASE', 'jikan'),
         ]
     ],

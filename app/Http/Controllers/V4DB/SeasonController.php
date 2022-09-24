@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\V4DB;
 
 use App\Anime;
+use App\AnimeShort;
 use App\Http\HttpResponse;
 use App\Http\QueryBuilder\SearchQueryBuilderAnime;
 use App\Http\Resources\V4\AnimeCollection;
+use App\Http\Resources\V4\AnimeShortCollection;
 use App\Http\Resources\V4\ResultsResource;
 use Exception;
 use Illuminate\Http\Request;
@@ -85,6 +87,7 @@ class SeasonController extends Controller
         $maxResultsPerPage = env('MAX_RESULTS_PER_PAGE', 30);
         $page = $request->get('page') ?? 1;
         $limit = $request->get('limit') ?? $maxResultsPerPage;
+        $short = $request->boolean('short', false);
 
         if (!empty($limit)) {
             $limit = (int) $limit;
@@ -116,8 +119,9 @@ class SeasonController extends Controller
         if (is_null($season) && is_null($year)) {
             list($season, $year) = $this->getSeasonStr();
         }
-
-        $results = Anime::query()
+        if($short)
+        {
+            $results = AnimeShort::query()
             ->where('premiered', "{$season} $year")
             ->orderBy('members', 'desc')
             ->paginate(
@@ -125,10 +129,23 @@ class SeasonController extends Controller
                 ['*'],
                 null,
                 $page);
-
-        $response = (new AnimeCollection(
-            $results
-        ))->response();
+            $response = (new AnimeShortCollection(
+                $results
+            ))->response();
+        }
+        else{
+            $results = Anime::query()
+            ->where('premiered', "{$season} $year")
+            ->orderBy('members', 'desc')
+            ->paginate(
+                $limit,
+                ['*'],
+                null,
+                $page);
+            $response = (new AnimeCollection(
+                $results
+            ))->response();
+        }
 
         return $this->prepareResponse(
             $response,
