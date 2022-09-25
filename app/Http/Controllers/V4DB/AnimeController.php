@@ -52,6 +52,160 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AnimeController extends Controller
 {
+    private  function synonymGenreTheme(String $q)
+    {
+        switch ($q) {
+            case "Action": //id:1
+                return ["Acción"];
+            case "Adventure": //id:2
+                return ["Aventura", "Viaje"];
+            case "Cars": //id:3
+                return ["Carros", "Automóvil", "Autos"];
+            case "Comedy": //id:4
+                return ["Comedia", "Bromas", "Chistes"];
+            case "Avant Garde": //id:5
+                return ["Vanguardia", "Inventivo", "Innovador", "Experimental", "Moderno", "Futurista", "Avances"];
+            case "Demons": //id:6
+                return ["Demonios"];
+            case "Mystery": //id:7
+                return ["Misterio", "Intriga", "Enigma", "Puzzle"];
+                //Drama id:8
+                //Ecchi id:9
+            case "Fantasy": //id:10
+                return ["Fantasía"];
+            case "Game": //id:11
+                return ["Juego", "Videojuego"];
+                //Hentai id:12
+            case "Historical": //id:13
+                return ["Histórico","Historia"];
+            case "Horror": //id:14
+                return ["Terror", "Miedo", "Espantos","Sustos"];
+            case "Kids": //id:15
+                return ["Niños"];
+                //null id:16
+            case "Martial Arts": //id:17
+                return ["Artes Marciales"];
+            case "Mecha": //id:18
+                return ["Robots"];
+            case "Music": //id:19
+                return ["Musica"];
+            case "Parody": //id:20
+                return ["Paródia"];
+                //Samurai id:21
+            case "Romance": //id:22
+                return ["Amor", "Novios", "Noviazgo", "Romántico", "Relaciones amorosas"];
+            case "School": //id:23
+                return ["Escolar", "Escuela", "Instituto", "Colegio", "Academia"];
+            case "Sci-Fi": //id:24
+                return ["Ciencia ficción", "Futurista"];
+                //shojo id:25
+            case "Girls Love": //id:26
+                return ["GL", "Yuri", "Tijeras"];
+                //Shounen id:27
+            case "Boys Love": //id:28
+                return ["BL", "Yaoi", "Espadazos"];
+            case "Space": //id:29
+                return ["Espacio", "Espacio exterior", "Espacio sideral", "Universo"];
+            case "Sports": //id:30
+                return ["Deportes", "Spokon", "Deportivo"];
+            case "Super Power": //id:31
+                return ["Super poderes"];
+            case "Vampire": //id:32
+                return ["Vampiros"];
+                //null id:33
+                //null id:34
+                //Harem id:35
+            case "Slice of Life": //id:36
+                return ["Recuentos de la vida", "Vida cotidiana"];
+            case "Supernatural": //id:37
+                return ["Sobrenatural"];
+            case "Military": //id:38
+                return ["Militar", "Bélico", "Soldado", "Guerra"];
+            case "Police": //id:39
+                return ["Policía", "Policial"];
+            case "Psychological": //id:40
+                return ["Psicológico", "Juegos  mentales"];
+            case "Suspense": //id:41
+                return ["Suspenso"];
+                //Seinen id:42
+                //Josei id:43
+                //null id:44
+                //null id:45
+            case "Award Winning": //id:46
+                return ["Ganador del premio"];
+            case "Gourmet": //id:47
+                return ["Alimentos", "Comida"];
+            case "Workplace": //id:48
+                return ["Lugar de trabajo", "Trabajo", "Laburo", "Trabajo", "Empleo", "Entorno laboral"];
+                //?? id:49
+            case "Adult Cast": //id:50
+                return ["Personajes Adultos", "Adultos"];
+            case "Anthropomorphic": //id:51
+                return ["Furros", "Furry", "Animales", "Antropomórfico"];
+            case "CGDCT": //id:52
+                return ["FBI", "MOE", "Kawai","Cute","Lolis"];
+            case "Childcare": //id:53
+                    return ["Crianza","Guardería", "Cuidado de niños", "Niñera","Niñero"];
+            case "Combat Sports": //id:54
+                return ["Combate", "Duelo", "Peleas", "Cute", "Lolis", "Luchas"];
+            case "Delinquent": //id:55
+                return ["Delincuente", "Vándalo", "Malhechor", "Criminal", "Pandillas", "Rufián", " GTA"];
+            case "Educational"://id:56
+                return ["Educativo","Enseñanza", "Aprendizaje", "Informativo", "Formativo"];
+            case "Gag Humor"://id:57
+                return ["Humor","XD","Payaso", "Clown"];
+            case "Gore"://id:58
+                return ["Sangre","Rojo","Sangriento", "Carnicería", "Matanza"];
+            case "High Stakes Game"://id:59
+                return ["Juegos", "Apuestas", "Juego de alto riesgo"];
+            case "Idols (Female)"://id:60
+                return ["Idols", "Idols Mujer"];
+            case "Idols (Male)"://id:61
+                return ["Idols", "Idols Hombre"];
+            case "Isekai"://id:62
+                return ["Otro mundo", "Nueva vida"];
+            case "Iyashikei"://id:63
+                return ["Sanar", "Curativo", "Purificador", "Recuentos de la vida", "Vida cotidiana", "Tranquilidad"];
+            case "Love Polygon"://id:64
+                return ["Triangulo amoroso", "Friendzone","Guinazo"];
+            // Magical Sex Shift id:65
+            case "Mahou Shoujo"://id:66
+                return ["Chica magica", "Niña magica","Chica mágica", "Niña mágica"];
+            case "Medical"://id:67
+                return ["Medico", "Doctor","Medicina", "Salud"];
+            case "Organized Crime "://id:68
+                return ["Crimen", "Crimen organizado","Mafias", "Mafioso","Delincuencia"];
+            case "Otaku Culture"://id:69
+                return ["Otaku" ,"Cultura Otaku", "Freaky"];
+            case "Performing Arts"://id:70
+                return ["Artes escénicas" ,"Artes escenicas", "Artes"];
+            case "Pets"://id:71
+                return ["Mascotas" ,"Animales"];
+            case "Reincarnation"://id:72
+                return ["Reencarnacion"];
+            case "Reverse Harem"://id:73
+                return ["Harem Inverso","Harem de hombres"];
+            case "Romantic Subtext"://id:74
+                return ["Subtexto romántico","Casi algo", "Casi novio", "Casi novia", "Amigovios", "Cortejo", "Flirteo", "Acompañamiento", "Amor", "Románce","Romántico", "Relaciones amorosas", "Emparejar", "Ship", "Shipeo", "Shipear", "Shipp", "Shippeo", "Shippear", "Tibios", "Timidos"];
+            case "Showbiz"://id:75
+                return ["Espectáculo","Industria"];
+            case "Survival"://id:76
+                return ["Supervivencia","Sobrevivir"];;
+            case "Team Sports"://id:77
+                return ["Equipo deportivo" ,"Deportes", "Spokon", "Deportivo","Equipos deportivos"];
+            case "Time Travel"://id:78
+                return ["Viaje en el tiempo","Viaje a través del tiempo", "Máquina del tiempo"];
+            case "Video Game"://id:79
+                return ["Video juegos","Videojuego","Juegos de video"];
+            case "Visual Arts"://id:80
+                return ["Arte visual","Cine"];
+            case "Crossdressing"://id:81
+                return ["Trapos","Trasvestis"];
+            default:
+             return null;
+        }
+    }
+
     /**
      *  @OA\Get(
      *     path="/anime/{id}/full",
@@ -97,6 +251,58 @@ class AnimeController extends Controller
                 return HttpResponse::notFound($request);
             }
 
+            $charactersInfo = array();
+            $seiyus = array();
+            $synonymsTGD = array(); //TGD:T=>Themes, G=>Genre, D=>Demographics
+
+            $charactersAndStaff = $this->jikan->getAnimeCharactersAndStaff(new AnimeCharactersAndStaffRequest($id));
+            $characters = $charactersAndStaff->getCharacters();
+            foreach ($characters as $character) {
+                $name = $character->getCharacter()->getName();
+                $voiceActors = $character->getVoiceActors();
+                array_push($charactersInfo, $name);
+                if ($voiceActors) {
+                    $numVoiceActors = count($voiceActors);
+                    for ($i = 0; $i < $numVoiceActors; $i++) {
+                        $voiceActor = $voiceActors[$i];
+                        if ($voiceActor->getLanguage() == 'Japanese') {
+                            $actor = $voiceActor->getPerson()->getName();
+                        } else if ($i == $numVoiceActors - 1) {
+                            $actor = $voiceActors[0]->getPerson()->getName();
+                        }
+                    }
+                    array_push($seiyus, $actor);
+                }
+            }
+
+            foreach ($response['themes'] as $theme) {
+                $themeSynonyms = $this->synonymGenreTheme($theme['name']);
+                if ($themeSynonyms) {
+                    $synonymsTGD = array_merge($synonymsTGD, $themeSynonyms);
+                }
+            }
+
+            foreach ($response['genres'] as $genre) {
+                $genreSynonyms = $this->synonymGenreTheme($genre['name']);
+                if ($genreSynonyms) {
+                    $synonymsTGD = array_merge($synonymsTGD, $genreSynonyms);
+                }
+            }
+
+            foreach ($response['demographics'] as $demographic) {
+                $demographicSynonyms = $this->synonymGenreTheme($demographic['name']);
+                if ($demographicSynonyms) {
+                    $synonymsTGD = array_merge($synonymsTGD, $demographicSynonyms);
+                }
+            }
+
+            $searchInfo = [
+                'characters' => $charactersInfo,
+                'seiyus' => $seiyus,
+                'synonyms_es' => $synonymsTGD,
+                'community_search_keys' => []
+            ];
+
             if ($results->isEmpty()) {
                 $meta = [
                     'createdAt' => new UTCDateTime(),
@@ -106,7 +312,7 @@ class AnimeController extends Controller
             }
             $meta['modifiedAt'] = new UTCDateTime();
 
-            $response = $meta + $response;
+            $response = $meta + $response + $searchInfo;
 
             if ($results->isEmpty()) {
                 Anime::query()

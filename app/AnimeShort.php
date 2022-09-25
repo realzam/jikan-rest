@@ -10,7 +10,7 @@ use Jikan\Jikan;
 use Jikan\Model\Common\YoutubeMeta;
 use Jikan\Request\Anime\AnimeRequest;
 
-class Anime extends Model
+class AnimeShort extends Model
 {
 
     /**
@@ -19,7 +19,7 @@ class Anime extends Model
      * @var array
      */
     protected $fillable = [
-        'mal_id','url','title','title_english','title_japanese','title_synonyms', 'images', 'type','source','episodes','status','airing','aired','duration','rating','score','scored_by','rank','popularity','members','favorites','synopsis','background','premiered','broadcast','related','producers','licensors','studios','genres', 'explicit_genres', 'themes', 'demographics', 'opening_themes','ending_themes'
+        'mal_id','url','title','title_english','title_japanese','title_synonyms', 'images', 'type','source','episodes','status','rating','score','scored_by','rank','popularity','members','favorites','synopsis','background','premiered','broadcast','related','producers','licensors','studios','genres', 'explicit_genres', 'themes', 'demographics', 'opening_themes','ending_themes'
     ];
 
     /**
@@ -27,7 +27,7 @@ class Anime extends Model
      *
      * @var array
      */
-    protected $appends = ['season', 'year', 'themes', 'season_es', 'explicit'];
+    protected $appends = ['season', 'year', 'themes'];
 
     /**
      * The table associated with the model.
@@ -36,14 +36,12 @@ class Anime extends Model
      */
     protected $table = 'anime';
 
-    /**
-     * The attributes excluded from the model's JSON form.
+     /**
+     * The attributes that should be visible in arrays.
      *
      * @var array
      */
-    protected $hidden = [
-        '_id', 'premiered', 'request_hash', 'expiresAt'
-    ];
+    protected $visible = ['url', 'trailer'];
 
     public function setSeasonAttribute($value)
     {
@@ -63,53 +61,6 @@ class Anime extends Model
 
         $season = explode(' ', $premiered)[0];
         return strtolower($season);
-    }
-
-    public function getSeasonEsAttribute()
-    {
-        $season = $this->getSeasonAttribute();
-
-        if (is_null($season)) {
-            return null;
-        }
-
-        switch ($season) {
-            case "winter":
-                return "invierno";
-            case "spring":
-                return "primavera";
-            case "summer":
-                return "verano";
-            case "fall":
-                return "otoño";
-        }
-    }
-
-    public function setSeasonEsAttribute($value)
-    {
-        $this->attributes['season_es'] = $this->getSeasonEsAttribute();
-    }
-
-    public function getExplicitAttribute()
-    {
-        $rating = $this->attributes['rating'];
-        if(str_contains($rating, 'Hentai'))
-        {
-            return true;
-        }
-        $genres = $this->attributes['genres'];
-        foreach ($genres as $genre ) {
-           if($genre['mal_id'] == 12 || $genre['mal_id'] == 49)
-           {
-            return true;
-           }
-        }
-        return false;
-    }
-
-    public function setExplicitAttribute($value)
-    {
-        $this->attributes['explicit'] = $this->getExplicitAttribute();
     }
 
     public function setYearAttribute($value)
