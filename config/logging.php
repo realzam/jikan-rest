@@ -51,6 +51,7 @@ return [
             'path' => storage_path('logs/daily/lumen.log'),
             'level' => 'debug',
             'days' => 14,
+	        'permission' => 0666,
         ],
 
         'slack' => [
